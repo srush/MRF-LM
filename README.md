@@ -13,6 +13,8 @@ This algorithm implemented in this project is described in the     [paper](http:
     Yacine Jernite, Alexander M. Rush, and David Sontag.
     Proceedings of ICML 2015.
 
+<img src="https://raw.githubusercontent.com/srush/MRF-LM/master/Trees.png" alt="alt text" style="width:100px;height:100px">
+
 ## Building
 
 To build the main C++ library, run
