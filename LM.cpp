@@ -76,7 +76,6 @@ void LMLowRank::ExpandModel() {
 // into a vector.
 void LMLowRank::BackpropGradient(double *grad) {
     // We compute the gradients in U
-    cout << K << " " << V << "back propping" << endl;
 
     #pragma omp parallel for
     for (int t = 0; t < V; t++) {

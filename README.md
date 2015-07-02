@@ -31,7 +31,7 @@ The training procedure requires two steps.
 First you construct a moments file from the text data of interest. We include the
 standard Penn Treebank language modelling data set as an example. This data is located under `lm_data/` . To extract moments from this file run
 
-    python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt --output lm_data/
+    python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt
 
 
 Next run the main `mrflm` executable providing the training moments, validation moments, and an output file for the model.

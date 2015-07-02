@@ -52,7 +52,7 @@ void Train::compute_progress() {
             best_valid_score = valid_score;
         }
     }
-    if (opts.exist("val-moments")) {
+    if (opts.exist("valid")) {
         printf("VALIDATION OBJECTIVE: \n");
         valid_score = model_->ComputeObjective(valid_moments,
                                                current_partition);

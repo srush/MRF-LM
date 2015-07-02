@@ -197,28 +197,3 @@ void ReadMoments(string mf, Moments *moments) {
     }
     myfile.close();
 }
-
-
-// void ReadMoments(string mf, Moments *moments) {
-//     ifstream myfile(mf);
-//     myfile >> moments->N >> moments->V >> moments->K;
-
-//     // moments->counts = new int[moments->V];
-//     // for (int i = 0; i < moments->V; i++) {
-//     //     myfile >> moments->counts[i];
-//     // }
-//     moments->nPairs = new int[moments->K];
-//     moments->Pairs = new int**[moments->K];
-//     for (int k = 0; k < moments->K; k++) {
-//         myfile >> moments->nPairs[k];
-//         printf("k=%d, npairs=%d\n", k, moments->nPairs[k]);
-//         moments->Pairs[k] = new int*[moments->nPairs[k]];
-//         for (int i = 0; i < moments->nPairs[k]; i++) {
-//             moments->Pairs[k][i] = new int[3];
-//             for (int j = 0; j < 3; j++) {
-//                 myfile >> moments->Pairs[k][i][j];
-//             }
-//         }
-//     }
-//     myfile.close();
-// }

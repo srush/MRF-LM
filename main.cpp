@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     opts.add<string>("valid", '\0',
                      "Validation moments file.", true, "");
     opts.add<string>("output", 'o', "Output file to write model to.", true, "");
-    opts.add<string>("model", 'm', "Model to use, one of (LM, LMFull, Tag).");
+    opts.add<string>("model", 'm', "Model to use, one of (LM, LMFull, Tag).", false, "LM");
     opts.add<int>("dims", 'D', "Size of embedding for low-rank MRF.",
                   false, 100);
 
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     //     printf("Read validation set, %d sentences\n", nsent_valid);
     // }
     if (opts.exist("valid")) {
-        ReadMoments(opts.get<string>("val-moments"), &valid_moments);
+        ReadMoments(opts.get<string>("valid"), &valid_moments);
 
         printf("Read validate moments\n");
     }
