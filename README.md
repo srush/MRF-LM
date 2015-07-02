@@ -1,8 +1,11 @@
-# MRF-LM: fast Markov Random Field language models
+# MRF-LM: Fast Markov Random Field Language Models
 
 [Documentation in progress]
 
-This is the code distribution for the paper
+An implementation of a fast variational inference algorithm for Markov
+Random Field language models as well as other Markov sequence models.
+
+This algorithm implemented in this project is described in the paper
 
     A Fast Variational Approach for Learning Markov Random Field Language Models
     Yacine Jernite, Alexander M. Rush, and David Sontag.
@@ -80,15 +83,15 @@ This same format is used for language modelling and tagging, and can be used for
 
 The code is broken into three main classes
 
-* Train.h
+#### Train.h
 
 Generic L-BFGS training. Implements most of Algorithm 2.
 
-* Inference.h
+#### Inference.h
 
 Lifted inference on a star-shaped MRF. Implements Algorithm 1.
 
-* Model.h
+#### Model.h
 
 Pairwise MRF parameters. Implements likelihood computation, gradient updates, and lifted structure.
 
