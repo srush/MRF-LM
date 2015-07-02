@@ -2,8 +2,8 @@
 
 #include "Model.h"
 #include "Inference.h"
-#include "TestModel.h"
 #include "Train.h"
+#include "Test.h"
 
 typedef const lbfgsfloatval_t real;
 

@@ -2,6 +2,8 @@
 #define TRAIN_H
 
 #include "Test.h"
+#include "Model.h"
+#include "Inference.h"
 
 class Train {
 public:
