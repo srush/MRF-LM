@@ -18,7 +18,7 @@ Available [here](http://people.seas.harvard.edu/~srush/icml15.pdf).
 
 To build the main C++ library, run
 
-> bash build.sh
+    bash build.sh
 
 This will build liblbfgs (needed for optimization) as well as the main
 executables. The package requires a C++ compiler with support for
@@ -31,12 +31,12 @@ The training procedure requires two steps.
 First you construct a moments file from the text data of interest. We include the
 standard Penn Treebank language modelling data set as an example. This data is located under `lm_data/` . To extract moments from this file run
 
-> python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt --output lm_data/
+    python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt --output lm_data/
 
 
 Next run the main `mrflm` executable providing the training moments, validation moments, and an output file for the model.
 
-> ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out
+    ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out
 
 This command will train a language model, compute validation
 log-likelihood, and write the parameters out to `model.out`. (These
@@ -87,11 +87,11 @@ This same format is used for language modelling and tagging, and can be used for
 
 The code is broken into three main classes
 
-* Train.h; Generic L-BFGS training. Implements most of Algorithm 2.
+* `Train.h`; Generic L-BFGS training. Implements most of Algorithm 2.
 
-* Inference.h; Lifted inference on a star-shaped MRF. Implements Algorithm 1.
+* `Inference.h`; Lifted inference on a star-shaped MRF. Implements Algorithm 1.
 
-* Model.h; Pairwise MRF parameters. Implements likelihood computation, gradient updates, and lifted structure.
+* `Model.h`; Pairwise MRF parameters. Implements likelihood computation, gradient updates, and lifted structure.
 
 The `Model.h` class is a full-rank MRF by default, but can be easily
 extended to allow for alternative parameterization. See `LM.h` for the low-rank
