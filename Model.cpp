@@ -101,7 +101,6 @@ void Model::SetWeights(const double *const_weight, bool reverse) {
 
 
 void Model::Exponentiate() {
-    cout << "EXPONENTIATE" << endl;
     int n = 0;
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
