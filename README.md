@@ -83,7 +83,7 @@ as index one. The format of the file is
 
 This same format is used for language modelling and tagging, and can be used for other models.
 
-### Code Format
+### Code Structure
 
 The code is broken into three main classes
 
