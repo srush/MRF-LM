@@ -6,18 +6,18 @@
 An implementation of a fast variational inference algorithm for Markov
 Random Field language models as well as other Markov sequence models.
 
-This algorithm implemented in this project is described in the paper
+This algorithm implemented in this project is described in the     [paper](http://people.seas.harvard.edu/~srush/icml15.pdf)
+
 
     A Fast Variational Approach for Learning Markov Random Field Language Models
     Yacine Jernite, Alexander M. Rush, and David Sontag.
     Proceedings of ICML 2015.
-    [http://people.seas.harvard.edu/~srush/icml15.pdf]
 
 ## Building
 
 To build the main C++ library, run
 
-> bash build.sh
+    bash build.sh
 
 This will build liblbfgs (needed for optimization) as well as the main
 executables. The package requires a C++ compiler with support for
@@ -28,12 +28,12 @@ OpenMP.
 First construct a moments file from the data set of interest. We include the
 standard Penn Treebank data set with the distribution in data/ .
 
-> python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt --output lm_data/
+    python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt --output lm_data/
 
 
 Next run the main `mrflm` executable.
 
-> ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out -D 100
+    ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out -D 100
 
 This will train a language model and write the parameters out to `model.out`. (These parameter settings
 will correspond to Figure 6 in the paper.)
