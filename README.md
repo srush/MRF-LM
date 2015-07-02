@@ -33,7 +33,7 @@ standard Penn Treebank data set with the distribution in data/ .
 
 Next run the main `mrflm` executable.
 
-> ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out -D 100
+    ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out -D 100
 
 This will train a language model and write the parameters out to `model.out`. (These parameter settings
 will correspond to Figure 6 in the paper.)
