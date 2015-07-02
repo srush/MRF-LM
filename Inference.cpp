@@ -1,10 +1,12 @@
 #include <math.h>
+#include <stdio.h>
 #include <omp.h>
 #include <iostream>
 
 #include "Model.h"
 #include "core.h"
 #include "Inference.h"
+
 
 using namespace std;
 
