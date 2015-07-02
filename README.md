@@ -83,17 +83,11 @@ This same format is used for language modelling and tagging, and can be used for
 
 The code is broken into three main classes
 
-#### Train.h
+* Train.h; Generic L-BFGS training. Implements most of Algorithm 2.
 
-Generic L-BFGS training. Implements most of Algorithm 2.
+* Inference.h; Lifted inference on a star-shaped MRF. Implements Algorithm 1.
 
-#### Inference.h
-
-Lifted inference on a star-shaped MRF. Implements Algorithm 1.
-
-#### Model.h
-
-Pairwise MRF parameters. Implements likelihood computation, gradient updates, and lifted structure.
+* Model.h; Pairwise MRF parameters. Implements likelihood computation, gradient updates, and lifted structure.
 
 The `Model.h` class is a full-rank MRF by default, but can be easily
 extended to allow for alternative parameterization. See `LM.h` for the low-rank
