@@ -99,7 +99,6 @@ void Model::SetWeights(const double *const_weight, bool reverse) {
     Exponentiate();
 }
 
-
 void Model::Exponentiate() {
     int n = 0;
     for (int l = 0; l < n_variables(); l++) {
