@@ -8,40 +8,39 @@ Random Field language models as well as other Markov sequence models.
 
 This algorithm implemented in this project is described in the paper
 
-
     A Fast Variational Approach for Learning Markov Random Field Language Models
     Yacine Jernite, Alexander M. Rush, and David Sontag.
     Proceedings of ICML 2015.
-    
-Available [here](http://people.seas.harvard.edu/~srush/icml15.pdf).
 
-<img src="https://raw.githubusercontent.com/srush/MRF-LM/master/Trees.png" alt="alt text" style="width:100px;height:100px">
+Available [here](http://people.seas.harvard.edu/~srush/icml15.pdf).
 
 ## Building
 
 To build the main C++ library, run
 
-    bash build.sh
+> bash build.sh
 
 This will build liblbfgs (needed for optimization) as well as the main
 executables. The package requires a C++ compiler with support for
 OpenMP.
 
-## Training
+## Training a Language Model
 
-First construct a moments file from the data set of interest. We include the
-standard Penn Treebank data set with the distribution in data/ .
+The training procedure requires two steps.
 
-    python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt --output lm_data/
+First you construct a moments file from the text data of interest. We include the
+standard Penn Treebank language modelling data set as an example. This data is located under `lm_data/` . To extract moments from this file run
+
+> python Moments.py --K 2 --train lm_data/ptb.train.txt --valid lm_data/ptb.valid.txt --output lm_data/
 
 
-Next run the main `mrflm` executable.
+Next run the main `mrflm` executable providing the training moments, validation moments, and an output file for the model.
 
-    ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out -D 100
+> ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out
 
-This will train a language model and write the parameters out to `model.out`. (These parameter settings
-will correspond to Figure 6 in the paper.)
-
+This command will train a language model, compute validation
+log-likelihood, and write the parameters out to `model.out`. (These
+parameter settings will correspond to Figure 6 in the paper.)
 
 ## MRF-LM
 
