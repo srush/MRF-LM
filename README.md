@@ -1,4 +1,5 @@
-# MRF-LM: Fast Markov Random Field Language Models
+# MRF-LM
+## Fast Markov Random Field Language Models
 
 [Documentation in progress]
 
