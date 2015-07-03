@@ -44,8 +44,9 @@ static lbfgsfloatval_t evaluate(void *instance, real *x,
 
 void Train::compute_progress() {
     if (test_ != NULL) {
-        printf("Validation: \n");
+        printf("Running Validation: \n");
         valid_score = test_->TestModel(*model_);
+        cout << valid_score << endl;
         if (valid_score > best_valid_score) {
             printf("Writing Model \n");
             model_->WriteModel(opts.get<string>("output"));
@@ -81,6 +82,7 @@ void Train::LBFGS() {
     printf("Allocated x, M= %d\n", model_->M);
     model_->SetWeights(x, true);
     printf("Weights x\n");
+    test_->TestModel(*model_);
 
     lbfgsfloatval_t fx;
     lbfgs_parameter_t param;

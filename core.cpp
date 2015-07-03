@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <vector>
+
+using namespace std;
+
 // H(\mu_x)
 double entropy(double *tab, int len) {
     double res = 0;
@@ -38,7 +42,8 @@ double mutual(double **array, double *tab1, double *tab2, int len) {
     return res;
 }
 
-double logsumtab(double* t, int len) {
+//double logsumtab(double* t, int len) {
+double logsumtab(vector<double> &t, int len) {
     double maxv = t[0];
     double result = 0;
     for (int i = 0; i < len; i++) {
@@ -66,7 +71,7 @@ double logsumtab(float* t, int len) {
     return maxv+log(result);
 }
 
-void exptab(double *tab, double *exptab, int len) {
+void exptab(vector<double> &tab, vector<double> &exptab, int len) {
     double maxt = tab[0];
     for (int s = 0; s < len; s++) {
         if (maxt < tab[s]) {

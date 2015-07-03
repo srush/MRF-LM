@@ -22,22 +22,22 @@ void Model::Init() {
     int L = n_variables();
     int K = L-1;
 
-    theta = new double**[K];
-    grad_theta = new double**[K];
-    expThetaRows = new double**[K];
-    expThetaCols = new double**[K];
+    theta.resize(K);
+    grad_theta.resize(K);
+    expThetaRows.resize(K);
+    expThetaCols.resize(K);
     int n = 0;
     M = 0;
     for (int l = 0; l < L; l++) {
         if (l == 0) continue;
-        theta[n] = new double*[n_states(0)];
-        grad_theta[n] = new double*[n_states(0)];
-        expThetaRows[n] = new double*[n_states(0)];
+        theta[n].resize(n_states(0));
+        grad_theta[n].resize(n_states(0));
+        expThetaRows[n].resize(n_states(0));
 
         for (int a = 0; a < n_states(0); a++) {
-            theta[n][a] = new double[n_states(l)];
-            grad_theta[n][a] = new double[n_states(l)];
-            expThetaRows[n][a] = new double[n_states(l)+1];
+            theta[n][a].resize(n_states(l), 0.0);
+            grad_theta[n][a].resize(n_states(l), 0.0);
+            expThetaRows[n][a].resize(n_states(l)+1);
 
             for (int b = 0; b < n_states(l); b++) {
                 theta[n][a][b] = 0;
@@ -48,9 +48,9 @@ void Model::Init() {
         }
 
         // Transpose of expThetaRows.
-        expThetaCols[n] = new double*[n_states(l)];
+        expThetaCols[n].resize(n_states(l));
         for (int a = 0; a < n_states(l); a++) {
-            expThetaCols[n][a] = new double[n_states(0)+1];
+            expThetaCols[n][a].resize(n_states(0)+1);
         }
         n++;
     }
@@ -103,7 +103,7 @@ void Model::Exponentiate() {
     int n = 0;
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
-        double *temp = new double[n_states(l)];
+        vector<double> temp(n_states(l));
 
         for (int s = 0; s < n_states(0); s++) {
             #pragma omp parallel for
@@ -112,9 +112,8 @@ void Model::Exponentiate() {
             }
             exptab(temp, expThetaRows[n][s], n_states(l));
         }
-        delete temp;
 
-        temp = new double[n_states(0)];
+        temp.resize(n_states(0));
         for (int t = 0; t < n_states(l); t++) {
             #pragma omp parallel for
             for (int s = 0; s < n_states(0); s++) {
@@ -122,7 +121,6 @@ void Model::Exponentiate() {
             }
             exptab(temp, expThetaCols[n][t], n_states(0));
         }
-        delete temp;
         ++n;
     }
 }
@@ -159,7 +157,7 @@ double Model::ComputeObjective(const Moments &mom,
     double res = 0;
     for (int k = 0; k < mom.L - 1; k++) {
         for (int pa = 0; pa < mom.nPairs[k]; pa++) {
-            int *p = mom.Pairs[k][pa];
+            const vector<int> &p = mom.Pairs[k][pa];
             res += theta[k][p[0]][p[1]] * ((double)p[2]) / mom.N;
         }
     }
@@ -176,20 +174,23 @@ struct Moments valid_moments;
 void ReadMoments(string mf, Moments *moments) {
     ifstream myfile(mf);
     myfile >> moments->N >> moments->L;
-    moments->sizes = new int[moments->L];
+    moments->sizes.resize(moments->L);
     for (int k = 0; k < moments->L; k++) {
-            myfile >> moments->sizes[k];
+        myfile >> moments->sizes[k];
     }
-    moments->nPairs = new int[moments->L-1];
-    moments->Pairs = new int**[moments->L-1];
+    moments->nPairs.resize(moments->L-1);
+    moments->Pairs.resize(moments->L-1);
     for (int k = 0; k < moments->L - 1; k++) {
         myfile >> moments->nPairs[k];
         printf("k=%d, npairs=%d\n", k, moments->nPairs[k]);
-        moments->Pairs[k] = new int*[moments->nPairs[k]];
+        moments->Pairs[k].resize(moments->nPairs[k]);
         for (int i = 0; i < moments->nPairs[k]; i++) {
-            moments->Pairs[k][i] = new int[3];
+            moments->Pairs[k][i].resize(3);
             for (int j = 0; j < 3; j++) {
-                myfile >> moments->Pairs[k][i][j];
+                int p;
+                myfile >> p;
+                moments->Pairs[k][i][j] = p;
+                assert(p >= 0);
             }
         }
     }

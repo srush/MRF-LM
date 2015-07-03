@@ -9,6 +9,55 @@
 
 using namespace std;
 
+Inference::Inference(Model *model) : model_(model) {
+        // Set the options.
+        dual_rate = opts.get<double>("dual-rate");
+        dual_iter = opts.get<int>("dual-iter");
+        mult_rate = opts.get<double>("mult-rate");
+        keep_deltas = opts.exist("keep-deltas");
+
+        delta.resize(model_->n_constraints());
+        for (int c = 0; c < model->n_constraints(); c++) {
+            int CS = model_->n_constraint_size(c);
+            delta[c].resize(CS);
+            for (int k = 0; k < CS; k++) {
+                int l = model_->n_constraint_variable(c, k);
+                delta[c][k].resize(model_->n_states(l));
+                for (int s = 0; s < model_->n_states(l); s++) {
+                    delta[c][k][s] = 0;
+                }
+            }
+        }
+
+        int L = model_->n_variables();
+        psi .resize(L);
+        expPsi.resize(L);
+        mu1.resize(L);
+        dualtheta0.resize(L);
+        expdualtheta0.resize(L);
+
+        for (int l = 0; l < L; l++) {
+            int V = model_->n_states(l);
+            psi[l] .resize(V);
+            expPsi[l].resize(V+1);
+            mu1[l].resize(V);
+            dualtheta0[l].resize(V);
+            expdualtheta0[l].resize(V+1);
+        }
+
+        mu2.resize(L-1);
+        int n = 0;
+        for (int l = 0; l < L; l++) {
+            if (l == 0) continue;
+            int V = model_->n_states(0);
+            mu2[n].resize(V);
+            for (int a = 0; a < V; a++) {
+                mu2[n][a].resize(model_->n_states(l));
+            }
+            n++;
+        }
+}
+
 // Message passing algorithm in real space with unary
 // potentials theta0 and edge potentials (K+1)*theta
 double Inference::bp(bool compute_pairwise) {
@@ -133,7 +182,7 @@ void Inference::MakeFullGradient(const Moments &train_moments) {
     for (int l = 0; l < L; l++) {
         if (l == 0) continue;
         for (int pa = 0; pa < train_moments.nPairs[n]; pa++) {
-            int *p = train_moments.Pairs[n][pa];
+            const vector<int> &p = train_moments.Pairs[n][pa];
             model_->grad_theta[n][p[0]][p[1]] +=
                     ((double)p[2]) / train_moments.N;
         }

@@ -7,6 +7,7 @@
 #include "Tag.h"
 #include "Inference.h"
 #include "Train.h"
+#include "TagTest.h"
 #include "core.h"
 
 using namespace std;
@@ -35,6 +36,11 @@ int main(int argc, char **argv) {
                      "Dual decomposition subgradient decay rate.", false, 0.5);
     opts.add("keep-deltas", '\0',
              "Keep dual values between subgradient epochs.");
+    opts.add<string>("tag-features", '\0',
+                     "Features for the tagging model.", false, "");
+    opts.add<string>("valid-tag", '\0',
+                     "", false, "");
+
 
     opts.parse_check(argc, argv);
 
@@ -44,9 +50,10 @@ int main(int argc, char **argv) {
     Model *model;
     string model_type = opts.get<string>("model");
     if (model_type == "Tag") {
-        int F = 2;
-        model = new TagFeatures(train_moments.L, train_moments.sizes[0],
-                                train_moments.L, train_moments.sizes[train_moments.L-1], F);
+        cout << "make dire" << endl;
+        model = new TagFeatures(1, train_moments.sizes[train_moments.L-1],
+                                1, train_moments.sizes[0],
+                                opts.get<string>("tag-features"));
     } else {
         if (model_type == "LM") {
             model = new LMLowRank(train_moments.L-1, train_moments.sizes[0],
@@ -59,8 +66,8 @@ int main(int argc, char **argv) {
     Inference inference(model);
 
     // If a validation set is given, read it.
-    Test *train_test = NULL;
-    Test *valid_test = NULL;
+    // Test *train_test = NULL;
+    TagTest valid_test(opts.get<string>("valid-tag"));
 
     // if (opts.exist("train")) {
     //     train_test = new Test(opts.get<string>("train"));
@@ -77,7 +84,7 @@ int main(int argc, char **argv) {
     }
 
     // Run training.
-    Train train(model, &inference, NULL);
+    Train train(model, &inference, &valid_test);
     train.LBFGS();
 
     // WriteModel(opts.get<string>("output"));

@@ -10,8 +10,9 @@ extern cmdline::parser opts;
 
 struct Moments {
     int N, L;
-    int *sizes;
-    int *nPairs, ***Pairs;
+    vector<int> sizes;
+    vector<int> nPairs;
+    vector<vector<vector<int> > > Pairs;
 };
 
 extern struct Moments train_moments;
@@ -53,11 +54,11 @@ public:
     // Full model potentials.
     // \theta \in R^{KxVxV}
     // \grad_theta \in R^{KxVxV}
-    double ***theta,  ***grad_theta;
+    vector<vector<vector<double> > > theta, grad_theta;
 
     // Exponentiated full potentials and transposition.
     // \exp(\theta_k) and  \exp(\theta_k^\T)
-    double ***expThetaRows, ***expThetaCols;
+    vector<vector<vector<double> > > expThetaRows, expThetaCols;
 
     // Number of parameters of the model.
     int M;

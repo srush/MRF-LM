@@ -5,7 +5,6 @@
 
 class Test {
 public:
-    Test(string mf);
     virtual double TestModel(Model &model) = 0;
 };
 

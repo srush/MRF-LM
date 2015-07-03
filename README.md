@@ -36,7 +36,7 @@ standard Penn Treebank language modelling data set as an example. This data is l
 
 Next run the main `mrflm` executable providing the training moments, validation moments, and an output file for the model.
 
-    ./mrflm --train lm_data/ptb.train_moments.txt --valid lm_data/ptb.valid_moments.txt --output model.out
+    ./mrflm --train=lm_data/ptb.train.txt_moments_K2.dat --valid=lm_data/ptb.valid.txt_moments_K2.dat --output=model.out
 
 This command will train a language model, compute validation
 log-likelihood, and write the parameters out to `model.out`. (These

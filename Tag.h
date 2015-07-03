@@ -8,20 +8,19 @@ using namespace std;
 class Tag : public Model {
 public:
     Tag(int _K, int _V, int _M, int _T)
-            : K(_K), V(_V), M(_M), T(_T) {
-        Init();
+            : K(_K), V(_V), MR(_M), T(_T) {
     }
 
-    int n_variables() { return K + M + 1; }
+    int n_variables() { return K + MR + 1; }
     int n_states(int i) {
-        if (i <= K) return V;
-        else return T;
+        if (i <= K) return T;
+        else return V;
     }
 
     int n_constraints() { return 2; }
     int n_constraint_size(int cons) {
         if (cons == 0) return K;
-        else return M-1;
+        else return MR-1;
     }
 
     int n_constraint_base(int cons) {
@@ -36,23 +35,18 @@ public:
     int constrained(int i, int j) {
         if (i <= K && j <= K && j != i) return true;
         if (i > K && j > K && j != i) return true;
+        return false;
     }
-    int n_trees() { return max(K+1, M); }
+    int n_trees() { return max(K+1, MR); }
 
-    /* int n_word_variable(int i) { */
-    /*     return  */
-    /* } */
-    int n_features(int m, int v) { }
-    int n_feature(int m, int v, int i) { }
-
-    int K, V, M, T;
+    int K, V, MR, T;
 };
 
 
 class TagFeatures : public Tag {
 public:
-    TagFeatures(int _K, int _V, int _M, int _T, int _F);
-
+    TagFeatures(int _K, int _V, int _M, int _T,
+                string feature_file);
 
     // Convert grad_theta to a flattened version
     // for parameters update.
@@ -63,6 +57,15 @@ public:
     void SetWeights(const double *const_weight,
                     bool reverse);
 
+    int n_features(int m, int v) {
+        return features[m][v].size();
+    }
+    int n_feature(int m, int v, int i) {
+        return features[m][v][i];
+    }
+
+    void ReadFeatures(string feature_file);
+
 private:
     void ExpandModel();
 
@@ -71,6 +74,7 @@ private:
 
     vector<vector<vector<double> > > linear;
     vector<vector<vector<double> > > pair;
+    vector<vector<vector<int> > > features;
 };
 
 #endif
