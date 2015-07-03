@@ -78,7 +78,6 @@ void TagFeatures::BackpropGradient(double *grad) {
         for (int s = 0; s < T; s++) {
             for (int t = 0; t < V; t++) {
                 for (int i = 0; i < n_features(m, t); ++i) {
-
                     int f = n_feature(m, t, i);
                     int key = map_feature(m, f, s, MR, F, T);
 

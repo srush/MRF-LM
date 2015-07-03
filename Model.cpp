@@ -61,13 +61,17 @@ void Model::BackpropGradient(double *grad) {
     // Full rank model.
     // Backprop is trivial.
     int n = 0;
+    int key = 0;
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
         #pragma omp parallel for
         for (int s = 0; s < n_states(0); s++) {
             for (int t = 0; t < n_states(l); t++) {
-                int key = map_key(n, s, t, n_states(0), n_states(l));
+                //t key = map_key(n, s, t, n_states(0), n_states(l));
+                //assert(key < M);
+
                 grad[key] = grad_theta[n][s][t];
+                ++key;
             }
         }
         ++n;
@@ -81,17 +85,20 @@ void Model::SetWeights(const double *const_weight, bool reverse) {
     double *weight = (double *)const_weight;
 
     int n = 0;
+    int key = 0;
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
         #pragma omp parallel for
         for (int s = 0; s < n_states(0); s++) {
             for (int t = 0; t < n_states(l); t++) {
-                int key = map_key(n, s, t, n_states(0), n_states(l));
+                // int key = map_key(n, s, t, n_states(0), n_states(l));
+                assert(key < M);
                 if (!reverse) {
                     theta[n][s][t] = weight[key];
                 } else {
                     weight[key] = theta[n][s][t];
                 }
+                ++key;
             }
         }
         ++n;

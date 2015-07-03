@@ -1,4 +1,4 @@
-CC=g++ -std=c++0x -Wall -fopenmp -O3
+CC=g++ -std=c++0x -Wall -fopenmp -g
 CFLAGS=-I. -I./liblbfgs-1.10/include/
 
 DEPS = Inference.h Model.h LM.h Tag.h  core.h Train.h Test.h TagTest.h

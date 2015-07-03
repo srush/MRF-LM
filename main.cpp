@@ -50,10 +50,13 @@ int main(int argc, char **argv) {
     Model *model;
     string model_type = opts.get<string>("model");
     if (model_type == "Tag") {
-        cout << "make dire" << endl;
         model = new TagFeatures(1, train_moments.sizes[train_moments.L-1],
                                 1, train_moments.sizes[0],
                                 opts.get<string>("tag-features"));
+    } else if (model_type == "TagFull") {
+        model = new Tag(1, train_moments.sizes[train_moments.L-1],
+                        1, train_moments.sizes[0]);
+
     } else {
         if (model_type == "LM") {
             model = new LMLowRank(train_moments.L-1, train_moments.sizes[0],

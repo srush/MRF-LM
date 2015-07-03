@@ -1,5 +1,6 @@
 #ifndef TAG_H
 #define TAG_H
+
 #include "Model.h"
 #include <vector>
 
@@ -9,6 +10,7 @@ class Tag : public Model {
 public:
     Tag(int _K, int _V, int _M, int _T)
             : K(_K), V(_V), MR(_M), T(_T) {
+        Init();
     }
 
     int n_variables() { return K + MR + 1; }

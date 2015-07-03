@@ -54,8 +54,8 @@ double TagTest::TestModel(Model &model) {
     return correct / (double)total;
 }
 
-double TagTest::potential(Tag &model,
-                          const vector<int> &words, int i, int tag, int prev) {
+double TagTest::potential(Tag &model, const vector<int> &words,
+                          int i, int tag, int prev) {
     // Bigram potential.
     double potential = model.theta[0][prev][tag];
     for (int k = 0; k < model.MR; ++k) {
