@@ -104,29 +104,32 @@ void Model::SetWeights(const double *const_weight, bool reverse) {
 }
 
 void Model::Exponentiate() {
+    cout << "expo" << endl;
     int n = 0;
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
         vector<double> temp(n_states(l));
-
+        #pragma omp parallel for
         for (int s = 0; s < n_states(0); s++) {
-            #pragma omp parallel for
             for (int t = 0; t < n_states(l); t++) {
-                temp[t] = n_trees() * theta[n][s][t];
+                expThetaRows[n][s][t] = n_trees() * theta[n][s][t];
             }
-            exptab(temp, expThetaRows[n][s], n_states(l));
+            exptab(expThetaRows[n][s],
+                   expThetaRows[n][s], n_states(l));
         }
 
-        temp.resize(n_states(0));
+
+        #pragma omp parallel for
         for (int t = 0; t < n_states(l); t++) {
-            #pragma omp parallel for
             for (int s = 0; s < n_states(0); s++) {
-                temp[s] = n_trees() * theta[n][s][t];
+                expThetaCols[n][t][s] = n_trees() * theta[n][s][t];
             }
-            exptab(temp, expThetaCols[n][t], n_states(0));
+            exptab(expThetaCols[n][t],
+                   expThetaCols[n][t], n_states(0));
         }
         ++n;
     }
+    cout << "end expo" << endl;
 }
 
 // Read the model file from disk.

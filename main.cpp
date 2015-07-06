@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
                   "Number of cores to use for OpenMP.", false, 20);
     opts.add<double>("dual-rate", 'd',
                      "Dual decomposition subgradient rate (\\alpha_1).",
-                     false, 20);
+                     false, 100);
     opts.add<int>("dual-iter", '\0',
                   "Dual decomposition subgradient epochs to run.", false, 500);
     opts.add<double>("mult-rate", '\0',

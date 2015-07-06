@@ -89,6 +89,8 @@ void LMLowRank::BackpropGradient(double *grad) {
         }
     }
 
+
+    #pragma omp parallel for
     for (int s = 0; s < V; s++) {
         for (int d = 0; d < D; d++) {
             int key = map_word(s, d, D, V);

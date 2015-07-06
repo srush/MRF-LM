@@ -264,7 +264,7 @@ double Inference::DualInf() {
         }
         part_old = part;
 
-        printf("Iter %d   \t difmus %f part %f rate %f\n",
+        printf("Iter %d   \t difmus %f part %f rate %f\r",
                iter, difmus, part, run_dual_rate);
         fflush(stdout);
     }
