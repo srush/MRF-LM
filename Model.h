@@ -55,6 +55,7 @@ public:
     // \theta \in R^{KxVxV}
     // \grad_theta \in R^{KxVxV}
     vector<vector<vector<double> > > theta, grad_theta;
+    vector<vector<vector<int> > > theta_key;
 
     // Exponentiated full potentials and transposition.
     // \exp(\theta_k) and  \exp(\theta_k^\T)

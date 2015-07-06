@@ -14,15 +14,12 @@ using namespace std;
 
 cmdline::parser opts;
 
-inline int map_key(int k, int v1, int v2, int V1, int V2) {
-    return k * V1 * V2 + v1 * V2 + v2;
-}
-
 void Model::Init() {
     int L = n_variables();
     int K = L-1;
 
     theta.resize(K);
+    theta_key.resize(K);
     grad_theta.resize(K);
     expThetaRows.resize(K);
     expThetaCols.resize(K);
@@ -31,17 +28,20 @@ void Model::Init() {
     for (int l = 0; l < L; l++) {
         if (l == 0) continue;
         theta[n].resize(n_states(0));
+        theta_key[n].resize(n_states(0));
         grad_theta[n].resize(n_states(0));
         expThetaRows[n].resize(n_states(0));
 
         for (int a = 0; a < n_states(0); a++) {
             theta[n][a].resize(n_states(l), 0.0);
+            theta_key[n][a].resize(n_states(l));
             grad_theta[n][a].resize(n_states(l), 0.0);
             expThetaRows[n][a].resize(n_states(l)+1);
 
             for (int b = 0; b < n_states(l); b++) {
                 theta[n][a][b] = 0;
                 // Another param.
+                theta_key[n][a][b] = M;
                 M++;
                 grad_theta[n][a][b] = 0;
             }
@@ -61,15 +61,13 @@ void Model::BackpropGradient(double *grad) {
     // Full rank model.
     // Backprop is trivial.
     int n = 0;
-    int key = 0;
+
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
         #pragma omp parallel for
         for (int s = 0; s < n_states(0); s++) {
             for (int t = 0; t < n_states(l); t++) {
-                //t key = map_key(n, s, t, n_states(0), n_states(l));
-                //assert(key < M);
-
+                int key = theta_key[n][s][t];
                 grad[key] = grad_theta[n][s][t];
                 ++key;
             }
@@ -85,14 +83,13 @@ void Model::SetWeights(const double *const_weight, bool reverse) {
     double *weight = (double *)const_weight;
 
     int n = 0;
-    int key = 0;
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
         #pragma omp parallel for
         for (int s = 0; s < n_states(0); s++) {
             for (int t = 0; t < n_states(l); t++) {
                 // int key = map_key(n, s, t, n_states(0), n_states(l));
-                assert(key < M);
+                int key = theta_key[n][s][t];
                 if (!reverse) {
                     theta[n][s][t] = weight[key];
                 } else {
@@ -169,9 +166,9 @@ double Model::ComputeObjective(const Moments &mom,
         }
     }
     printf("---Energy %.4e, Partition %.4e \t \t \t \t \t >>> OBJECTIVE %.4e\n",
-           res, partition / (n_variables()),
-           res - partition / (n_variables()));
-    return res - partition / (n_variables());
+           res, partition / (n_trees()),
+           res - partition / (n_trees()));
+    return res - partition / (n_trees());
 }
 
 struct Moments train_moments;

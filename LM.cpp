@@ -1,5 +1,5 @@
 #include "LM.h"
-
+#include <cmath>
 inline int map_pair(int k, int t, int d, int D, int V) {
     return V + (k+1)*V*D + t*D + d;
 }
