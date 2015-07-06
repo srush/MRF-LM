@@ -69,19 +69,99 @@ The input to the main implementation is a file containing the moments of the lif
 MRF. The moments file assumes the lifted graph is star-shaped with the central variable
 as index one. The format of the file is
 
-    {n = # of samples}
-    {l = # of variables}
+    {N = # of samples}
+    {L = # of variables}
     {# of states of variable 1} {# of states of variable 2} ...(l columns)
-    {m1 = # of 2->1 pairs}
+    {M1 = # of 2->1 pairs}
     {State in 2} {State in 1} {Counts}
     {State in 2} {State in 1} {Counts}
-    ...(m1 rows)
-    {m2 = # of 3->1 pairs}
+    ...(M1 rows)
+    {M2 = # of 3->1 pairs}
     {State in 3} {State in 1} {Counts}
     {State in 3} {State in 1} {Counts}
-    ...(m2 rows)
+    ...(M2 rows)
 
-This same format is used for language modelling and tagging, and can be used for other models.
+This file format is used for both language modelling and tagging.
+
+### LM Moments File
+
+Consider a language modelling setup. 
+
+For example, let's say we were building a language model 
+with the training corpus:
+
+    the cat chased the mouse
+   
+If our model has context K = 2, then we transform the corpus to:
+
+    <S> <S> the cat chased the mouse
+
+After the transformation the number of samples is N = 7, the number of
+variables is L = K+1 = 3, the vocabulary size/number of states is V=5, and
+the dictionary is:
+
+    <S> 1
+    the 2
+    cat 3
+    chased 4
+    mouse 5
+
+The corresponding moments file would then look like:
+
+    7
+    3
+    5 5 5
+    7
+    5 1 1
+    1 1 1
+    1 2 1
+    2 3 1
+    3 4 1
+    4 2 1
+    2 5 1
+    7
+    2 1 1
+    5 1 1
+    1 2 1
+    1 3 1
+    2 4 1
+    3 2 1
+    4 5 1
+    
+### Tagging Moments File
+
+Now consider a tagging setup. Let's say we were building a tagging
+model with the training corpus:
+
+    the/D cat/N chased/V the/D mouse/N
+   
+If our model has context K=1, M=3 (roughly corresponding to Figure~7 in the paper) then we transform the corpus to:
+
+    <S>/<T> the/D cat/N chased/V the/D mouse/N
+
+After the transformation the number of samples is N = 6, the number of
+lifted variables is L = M + K+1 = 5, the number of tag states is T=4 and V=5 as above,
+and the tag dictionary is:
+
+    <T> 1
+    D 2
+    N 3
+    V 4
+
+The corresponding moments file would then look like:
+
+    6
+    5
+    4 5 5 5
+    6
+    3 1 1
+    1 2 1
+    2 3 1
+    3 4 1
+    4 2 1
+    2 3 1
+    ...
+
 
 
 ### Code Structure
