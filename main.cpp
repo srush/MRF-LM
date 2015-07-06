@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     opts.add<string>("valid", '\0',
                      "Validation moments file.", true, "");
     opts.add<string>("output", 'o', "Output file to write model to.", true, "");
-    opts.add<string>("model", 'm', "Model to use, one of (LM, LMFull, Tag).", false, "LM");
+    opts.add<string>("model", 'm', "Model to use, one of LM (LM low-rank parameters), LMFull (LM full-rank parameters).", false, "LM");
     opts.add<int>("dims", 'D', "Size of embedding for low-rank MRF.",
                   false, 100);
 
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     opts.add<double>("mult-rate", '\0',
                      "Dual decomposition subgradient decay rate.", false, 0.5);
     opts.add("keep-deltas", '\0',
-             "Keep dual values between subgradient epochs.");
+             "Keep dual delta values to hot-start between training epochs.");
     opts.add<string>("tag-features", '\0',
                      "Features for the tagging model.", false, "");
     opts.add<string>("valid-tag", '\0',
