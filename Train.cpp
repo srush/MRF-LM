@@ -72,11 +72,8 @@ double Train::compute_gradient(const double *x,
     current_partition = part;
 
     // Create the full gradient and back-prop to low-rank parameters.
-    cout << "Making grad" << endl;
     inf_->MakeFullGradient(train_moments);
-    cout << "Backing grad" << endl;
     model_->BackpropGradient(gradient);
-    cout << "End grad" << endl;
     return score;
 }
 

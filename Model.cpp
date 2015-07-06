@@ -104,7 +104,6 @@ void Model::SetWeights(const double *const_weight, bool reverse) {
 }
 
 void Model::Exponentiate() {
-    cout << "expo" << endl;
     int n = 0;
     for (int l = 0; l < n_variables(); l++) {
         if (l == 0) continue;
@@ -129,7 +128,6 @@ void Model::Exponentiate() {
         }
         ++n;
     }
-    cout << "end expo" << endl;
 }
 
 // Read the model file from disk.
