@@ -34,8 +34,8 @@ int main(int argc, char **argv) {
                   "Dual decomposition subgradient epochs to run.", false, 500);
     opts.add<double>("mult-rate", '\0',
                      "Dual decomposition subgradient decay rate.", false, 0.5);
-    opts.add("keep-deltas", '\0',
-             "Keep dual delta values to hot-start between training epochs.");
+    opts.add<bool>("keep-deltas", '\0',
+                   "Keep dual delta values to hot-start between training epochs.", false, false);
     opts.add<string>("tag-features", '\0',
                      "Features for the tagging model.", false, "");
     opts.add<string>("valid-tag", '\0',

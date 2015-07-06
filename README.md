@@ -47,19 +47,19 @@ parameter settings will correspond to Figure 6 in the paper.)
 The main MRF executable has several options for controlling the
 model used, training procedure, and the parameters of dual decomposition.
 
-    usage: ./mrflm --train=string --valid=string --output=string --model=string [options] ...
+    usage: ./mrflm --train=string --valid=string --output=string [options] ...
     options:
-    --train          Training moments file. (string)
-    --valid          Validation moments file. (string)
-    -o, --output     Output file to write model to. (string)
-    -m, --model      Model to use, one of (LM, LMFull, Tag). (string)
-    -D, --dims       Size of embedding for low-rank MRF. (int [=100])
-    -c, --cores      Number of cores to use for OpenMP. (int [=20])
-    -d, --dual-rate  Dual decomposition subgradient rate (\alpha_1). (double [=20])
-    --dual-iter      Dual decomposition subgradient epochs to run. (int [=500])
-    --mult-rate      Dual decomposition subgradient decay rate. (double [=0.5])
-    --keep-deltas    Keep dual values between subgradient epochs.
-    -?, --help       print this message
+      --train           Training moments file. (string)
+      --valid           Validation moments file. (string)
+      -o, --output      Output file to write model to. (string)
+      -m, --model       Model to use, one of LM (LM low-rank parameters), LMFull (LM full-rank parameters). (string [=LM])
+      -D, --dims        Size of embedding for low-rank MRF. (int [=100])
+      -c, --cores       Number of cores to use for OpenMP. (int [=20])
+      -d, --dual-rate   Dual decomposition subgradient rate (\alpha_1). (double [=20])
+      --dual-iter       Dual decomposition subgradient epochs to run. (int [=500])
+      --mult-rate       Dual decomposition subgradient decay rate. (double [=0.5])
+      --keep-deltas     Keep dual delta values to hot-start between training epochs. (bool [=0])
+      -?, --help        print this message
 
 ## Advanced Usage
 
