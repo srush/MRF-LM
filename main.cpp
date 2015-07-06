@@ -69,8 +69,10 @@ int main(int argc, char **argv) {
     Inference inference(model);
 
     // If a validation set is given, read it.
-    // Test *train_test = NULL;
-    TagTest valid_test(opts.get<string>("valid-tag"));
+    Test *valid_test = NULL;
+    if (opts.exist("valid-tag")) {
+        valid_test = new TagTest(opts.get<string>("valid-tag"));
+    }
 
     // if (opts.exist("train")) {
     //     train_test = new Test(opts.get<string>("train"));
@@ -87,7 +89,7 @@ int main(int argc, char **argv) {
     }
 
     // Run training.
-    Train train(model, &inference, &valid_test);
+    Train train(model, &inference, valid_test);
     train.LBFGS();
 
     // WriteModel(opts.get<string>("output"));

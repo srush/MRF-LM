@@ -82,7 +82,6 @@ void Train::LBFGS() {
     printf("Allocated x, M= %d\n", model_->M);
     model_->SetWeights(x, true);
     printf("Weights x\n");
-    test_->TestModel(*model_);
 
     lbfgsfloatval_t fx;
     lbfgs_parameter_t param;
