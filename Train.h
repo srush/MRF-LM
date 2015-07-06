@@ -8,7 +8,7 @@
 class Train {
 public:
 Train(Model *model, Inference *inf, Test *test) :
-    model_(model), inf_(inf), test_(test) {}
+    model_(model), inf_(inf), test_(test), best_valid_score(-1e10) {}
 
     // Run LBFGS Training.
     void LBFGS();
@@ -19,7 +19,7 @@ private:
     Model *model_;
     Inference *inf_;
     Test *test_;
-    double valid_score, best_valid_score = -1e10;
+    double valid_score, best_valid_score;
     double current_partition;
 
 };
