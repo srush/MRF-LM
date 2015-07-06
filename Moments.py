@@ -7,8 +7,7 @@ Script for constructing the moments for language modelling.
 import os
 import sys
 import argparse
-from collections import Counter
-
+from backport_collections import Counter
 
 def get_text(in_file, K):
     with open(in_file) as f:
