@@ -133,6 +133,8 @@ void Model::Exponentiate() {
 // Read the model file from disk.
 void Model::ReadModel(string mf) {
     ifstream myfile(mf);
+    ReadParams(myfile);
+    Init();
     myfile >> M;
     double *weights = new double[M];
     for (int m = 0; m < M; ++m) {
@@ -146,7 +148,8 @@ void Model::ReadModel(string mf) {
 // Write out the global model file to disk.
 void Model::WriteModel(string mf) {
     ofstream myfile(mf);
-    myfile << M << "\n"; // << K << " " << V << " " << D << " ";
+    WriteParams(myfile);
+    myfile << M << "\n";
     double *weights = new double[M];
     SetWeights(weights, true);
     for (int m = 0; m < M; ++m) {

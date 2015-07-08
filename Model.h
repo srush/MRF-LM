@@ -26,7 +26,10 @@ public:
     // Initialize the model. Constructs arrays and
     // randomly initlizes params.
     Model() {}
-    void Init();
+    virtual void Init();
+
+    virtual void InitFromMoments(const Moments &moments) = 0;
+
 
     // The the objetive score of moments, given the paritition estimate.
     double ComputeObjective(const Moments &moments,
@@ -49,6 +52,9 @@ public:
     virtual int n_constraint_variable(int cons, int i) = 0;
     virtual int constrained(int cons, int i) = 0;
     virtual int n_trees() = 0;
+
+    virtual void ReadParams(ifstream &myfile) = 0;
+    virtual void WriteParams(ofstream &myfile) = 0;
 
 
     // Full model potentials.

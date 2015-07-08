@@ -50,21 +50,18 @@ int main(int argc, char **argv) {
     Model *model;
     string model_type = opts.get<string>("model");
     if (model_type == "Tag") {
-        model = new TagFeatures(1, train_moments.sizes[train_moments.L-1],
-                                1, train_moments.sizes[0],
-                                opts.get<string>("tag-features"));
+        model = new TagFeatures();
+        ((TagFeatures*)model)->ReadFeatures(
+            opts.get<string>("tag-features"), 1);
     } else if (model_type == "TagFull") {
-        model = new Tag(1, train_moments.sizes[train_moments.L-1],
-                        1, train_moments.sizes[0]);
-
+        model = new Tag();
+    } else if (model_type == "LM") {
+        model = new LMLowRank(opts.get<int>("dims"));
     } else {
-        if (model_type == "LM") {
-            model = new LMLowRank(train_moments.L-1, train_moments.sizes[0],
-                                  opts.get<int>("dims"));
-        } else {
-            model = new LM(train_moments.L-1, train_moments.sizes[0]);
-        }
+        model = new LM();
     }
+    model->InitFromMoments(train_moments);
+
 
     Inference inference(model);
 

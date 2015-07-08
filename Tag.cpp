@@ -10,10 +10,8 @@ inline int map_feature(int m, int f, int t, int M, int F, int T) {
     return m * F * T + t * F + f;
 }
 
-TagFeatures::TagFeatures(int _K, int _V, int _M, int _T, string feature_file)
-        : Tag(_K, _V, _M, _T) {
-    ReadFeatures(feature_file);
-    Init();
+void TagFeatures::Init() {
+    Tag::Init();
 
     // Total number of parameters.
     M = 0;
@@ -37,6 +35,8 @@ TagFeatures::TagFeatures(int _K, int _V, int _M, int _T, string feature_file)
 
     ExpandModel();
 }
+
+
 
 // Construct unfactorized thetas.
 void TagFeatures::ExpandModel() {
@@ -125,7 +125,7 @@ void TagFeatures::SetWeights(const double *const_weight, bool reverse) {
 }
 
 
-void TagFeatures::ReadFeatures(string feature_file) {
+void TagFeatures::ReadFeatures(string feature_file, int MR) {
     ifstream myfile(feature_file);
     int npairs;
 
@@ -135,12 +135,14 @@ void TagFeatures::ReadFeatures(string feature_file) {
     features.resize(MR);
     for (int m = 0; m < MR; ++m) {
         features[m].resize(V);
-        cout << "V: " << V << endl;
     }
 
     cout << "npairs: " << npairs << endl;
     for (int p = 0; p < npairs; ++p) {
         myfile >> m >> word >> nfeats;
+        if (word > features[m].size()) {
+            features[m].resize(word+1);
+        }
         features[m][word].resize(nfeats);
         for (int f = 0; f < nfeats; ++f) {
             myfile >> features[m][word][f];

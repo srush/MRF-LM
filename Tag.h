@@ -3,13 +3,19 @@
 
 #include "Model.h"
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
 class Tag : public Model {
 public:
-    Tag(int _K, int _V, int _M, int _T)
-            : K(_K), V(_V), MR(_M), T(_T) {
+    Tag() {}
+
+    virtual void InitFromMoments(const Moments &moments) {
+        K = 1;
+        V = moments.sizes[moments.L-1];
+        MR = 1;
+        T = moments.sizes[0];
         Init();
     }
 
@@ -41,14 +47,21 @@ public:
     }
     int n_trees() { return max(K+1, MR); }
 
+    void ReadParams(ifstream &myfile) {
+        myfile >> K  >> V >> MR >> T;
+    }
+
+    void WriteParams(ofstream &myfile) {
+        myfile << K  << " " << V << " " << MR << " "  << T << endl;
+    }
+
     int K, V, MR, T;
 };
 
 
 class TagFeatures : public Tag {
 public:
-    TagFeatures(int _K, int _V, int _M, int _T,
-                string feature_file);
+    virtual void Init();
 
     // Convert grad_theta to a flattened version
     // for parameters update.
@@ -66,7 +79,7 @@ public:
         return features[m][v][i];
     }
 
-    void ReadFeatures(string feature_file);
+    void ReadFeatures(string feature_file, int);
 
 private:
     void ExpandModel();

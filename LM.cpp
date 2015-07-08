@@ -12,9 +12,8 @@ inline int map_uni(int v) {
     return v;
 }
 
-
-LMLowRank::LMLowRank(int _K, int _V, int par_D) : LM(_K, _V) {
-    D = par_D;
+void LMLowRank::Init() {
+    LM::Init();
 
     // Total number of parameters.
     M = 0;
@@ -51,9 +50,10 @@ LMLowRank::LMLowRank(int _K, int _V, int par_D) : LM(_K, _V) {
     for (int a = 0; a < V; a++) {
         transpose[a] = new double[V];
     }
-
     ExpandModel();
 }
+
+
 
 // Construct unfactorized thetas.
 void LMLowRank::ExpandModel() {

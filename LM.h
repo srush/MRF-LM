@@ -2,7 +2,11 @@
 #define LM_H
 
 #include <vector>
+#include <fstream>
 #include "Model.h"
+#include <algorithm>
+#include <cmath>
+#include <assert.h>
 
 using namespace std;
 
@@ -11,10 +15,22 @@ typedef vector<vector<double> > vectorTwo;
 
 class LM : public Model {
 public:
-    LM(int _K, int _V) : K(_K), V(_V) {
+    LM() { }
+    virtual void InitFromMoments(const Moments &moments) {
+        K = train_moments.L-1;
+        V = train_moments.sizes[0];
         Init();
     }
 
+    void set_vocab(string vocab) {
+        ifstream in_vocab(vocab);
+        while (in_vocab) {
+            int index, count;
+            string name;
+            in_vocab >> index >> name >> count;
+            dict.push_back(name);
+        }
+    }
 
     int n_states(int i) { return V; }
     int n_variables() { return K + 1; }
@@ -25,14 +41,22 @@ public:
     int n_trees() { return K + 1; }
 
     int constrained(int i, int j) { return j != i; }
+    void ReadParams(ifstream &myfile) {
+        myfile >> K >> V;
+    }
 
+    void WriteParams(ofstream &myfile) {
+        myfile << K << " " << V << endl;
+    }
     int K, V;
+    vector<string> dict;
 };
 
 class LMLowRank : public LM {
 public:
-    LMLowRank(int _K, int _V, int par_D);
-
+    LMLowRank() {}
+    LMLowRank(int D_): D(D_) {}
+    virtual void Init();
 
     // Convert grad_theta to a flattened version
     // for parameters update.
@@ -42,6 +66,61 @@ public:
     // new flat weight vector.
     void SetWeights(const double *const_weight,
                     bool reverse);
+
+    void ReadParams(ifstream &myfile) {
+        myfile >> K >> V >> D;
+    }
+
+    void WriteParams(ofstream &myfile) {
+        myfile << K << " " << V << " " << D << endl;
+    }
+
+    void WriteEmbeddings(string emb_file) {
+        ofstream output(emb_file);
+        for (int v = 0; v < V; ++v) {
+            output << dict[v] << " ";
+            for (int i = 0; i < D; ++i) {
+                output << U[v][i] << " ";
+            }
+            output << endl;
+        }
+    }
+
+    void kNN(int word, int K, vector<int> *knn) {
+        vector<pair<double, int> > scores(V);
+        for (int v = 0; v < V; ++v) {
+            if (v == word) continue;
+            double dot = 0.0;
+            double norm_v = 0.0, norm_w = 0.0;
+            for (int d = 0; d < D; ++d) {
+                dot += U[v][d] * U[word][d];
+                norm_v += U[v][d] * U[v][d];
+                norm_w += U[word][d] * U[word][d];
+            }
+            scores[v].first = dot / (sqrt(norm_v) * sqrt(norm_w));
+            scores[v].second = v;
+        }
+        sort(scores.begin(), scores.end());
+        reverse(scores.begin(), scores.end());
+        knn->resize(K);
+        for (int k = 0; k < K; ++k) {
+            (*knn)[k] = scores[k].second;
+        }
+    }
+
+    void WriteKNN(string emb_file, int K) {
+        ofstream output(emb_file);
+        vector<int> near;
+        for (int w = 0; w < V; ++w) {
+            output << dict[w] << endl;
+            kNN(w, K, &near);
+            for (int k = 0; k < K; ++k) {
+                int v = near[k];
+                output << "\t" << dict[v] << endl;
+            }
+        }
+    }
+
 
 private:
     void ExpandModel();

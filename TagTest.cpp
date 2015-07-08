@@ -37,9 +37,14 @@ TagTest::TagTest(string mf) {
 
 double TagTest::TestModel(Model &model) {
     Tag *tmodel = (Tag *)&model;
-    int total = 0;
-    int correct = 0;
+    vector<int> all_total(words.size(), 0);
+    vector<int> all_correct(words.size(), 0);
+
+    #pragma omp parallel for
     for (int i = 0; i < words.size(); ++i) {
+        int total = 0;
+        int correct = 0;
+
         vector<int> tags;
         if (words[i].size() == 0) continue;
         Viterbi(*tmodel, words[i], &tags, tmodel->T);
@@ -49,6 +54,15 @@ double TagTest::TestModel(Model &model) {
             }
             total++;
         }
+        all_total[i] = total;
+        all_correct[i] = correct;
+
+    }
+    int total = 0;
+    int correct = 0;
+    for (int i = 0; i < words.size(); ++i) {
+        total += all_total[i];
+        correct += all_correct[i];
     }
     cout << "Correct " << correct << " Total " << total << endl;
     return correct / (double)total;

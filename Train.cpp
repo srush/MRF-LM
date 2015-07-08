@@ -46,19 +46,22 @@ void Train::compute_progress() {
     if (test_ != NULL) {
         printf("Running Validation: \n");
         valid_score = test_->TestModel(*model_);
-        cout << valid_score << endl;
-        if (valid_score > best_valid_score) {
-            printf("Writing Model \n");
-            model_->WriteModel(opts.get<string>("output"));
-            best_valid_score = valid_score;
+
+    } else {
+        if (opts.exist("valid")) {
+            printf("VALIDATION OBJECTIVE: \n");
+            valid_score = model_->ComputeObjective(valid_moments,
+                                                   current_partition);
         }
     }
-    if (opts.exist("valid")) {
-        printf("VALIDATION OBJECTIVE: \n");
-        valid_score = model_->ComputeObjective(valid_moments,
-                                               current_partition);
-        printf("Validation Score: %f \n\n", valid_score);
+    cout << valid_score << endl;
+    printf("Validation Score: %f \n\n", valid_score);
+    if (valid_score > best_valid_score) {
+        printf("Writing Model \n");
+        model_->WriteModel(opts.get<string>("output"));
+        best_valid_score = valid_score;
     }
+
 
 }
 
