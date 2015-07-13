@@ -6,7 +6,7 @@
 
 class TagTest : public Test {
 public:
-    TagTest(string mf);
+    TagTest(string mf, bool);
     double TestModel(Model &model);
     double potential(Tag &model,
                      const vector<int> &words, int i, int tag, int prev);

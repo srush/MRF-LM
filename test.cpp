@@ -21,14 +21,13 @@ int main(int argc, char **argv) {
                      "Validation moments file.", true, "");
     opts.add<string>("train", '\0',
                      "Training moments file.", false, "");
-    opts.add<string>("embeddings", '\0', "", false,
-                     "File to write word-embeddings to.");
-    opts.add<string>("vocab", '\0', "", false, "Word vocab file.");
+    opts.add<string>("embeddings", '\0', "File to write word-embeddings to.",
+                     false, "");
+    opts.add<string>("vocab", '\0', "Word vocab file.", false, "");
     opts.add<string>("tag-features", '\0',
-                     "Features for the tagging model.", false,
-                     "Tag feature file.");
-    opts.add<string>("tag-file", '\0', "", false, "Tag test file.");
-    opts.add<string>("tag-vocab", '\0', "", false, "Tag vocab file.");
+                     "Features for the tagging model.", false,"");
+    opts.add<string>("tag-file", '\0', "Tag test file.", false, "");
+    opts.add<string>("tag-vocab", '\0', "Tag vocab file.", false, "");
     opts.add<int>("cores", 'c',
                   "Number of cores to use for OpenMP.", false, 20);
 
@@ -43,7 +42,7 @@ int main(int argc, char **argv) {
     if (model_type == "Tag") {
         model = new TagFeatures();
         ((TagFeatures*)model)->ReadFeatures(
-            opts.get<string>("tag-features"), 1);
+            opts.get<string>("tag-features"));
 
     } else if (model_type == "TagFull") {
         model = new Tag();

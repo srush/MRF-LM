@@ -36,10 +36,10 @@ standard Penn Treebank language modelling data set as an example. This data is l
 
 Next run the main `mrflm` executable providing the training moments, validation moments, and an output file for the model.
 
-    ./mrflm --train=lm_data/ptb.train.txt_moments_K2.dat --valid=lm_data/ptb.valid.txt_moments_K2.dat --output=model.out
+    ./mrflm --train=lm_data/ptb.train.txt_moments_K2.dat --valid=lm_data/ptb.valid.txt_moments_K2.dat --output=lm.model
 
 This command will train a language model, compute validation
-log-likelihood, and write the parameters out to `model.out`. (These
+log-likelihood, and write the parameters out to `lm.model`. (These
 parameter settings will correspond to Figure 6 in the paper.)
 
 ## MRF-LM
@@ -60,6 +60,37 @@ model used, training procedure, and the parameters of dual decomposition.
       --mult-rate       Dual decomposition subgradient decay rate. (double [=0.5])
       --keep-deltas     Keep dual delta values to hot-start between training epochs. (bool [=0])
       -?, --help        print this message
+
+There is a separate executable for testing the model after it is written.
+
+    usage: ./mrflm_test --model-name=string --valid=string [options] ...
+    options:
+      -o, --model-name      Output file to write model to. (string)
+      -m, --model           Model to use, one of LM (LM low-rank parameters), LMFull (LM full-rank parameters), Tag (POS tagger). (string [=LM])
+          --valid           Validation moments file. (string)
+          --train           Training moments file. (string [=])
+          --embeddings      File to write word-embeddings to. (string [=])
+          --vocab           Word vocab file. (string [=])
+          --tag-features    Features for the tagging model. (string [=])
+          --tag-file        Tag test file. (string [=])
+          --tag-vocab       Tag vocab file. (string [=])
+      -c, --cores           Number of cores to use for OpenMP. (int [=20])
+      -?, --help            print this message
+
+
+## Training a Tagging Model
+
+The tagging model can be trained in a very similar way. We assume that the data is in the CoNLL parsing format and under
+the `tag_data` directory. To construct the moments run the following command
+
+    python MomentsTag.py tag_data/ptb.train.txt tag_data/ptb.valid.txt tag_data/ptb.test.txt tag
+
+
+Next run the main `mrflm` executable providing the moments, the tag features, and validation in data.
+
+    ./mrflm --train=tag_data/ptb.train.txt.tag.counts  --valid=tag_data/ptb.valid.txt.tag.counts --output=tag.model --model=Tag --tag-features=tag_data/ptb.train.txt.tag.features --valid-tag=tag_data/ptb.valid.txt.tag.words
+
+This command will train a tagging model, compute validation by running the Viterbi algorithm, and write the parameters out to `tag.model`.
 
 ## Advanced Usage
 
@@ -85,13 +116,13 @@ This file format is used for both language modelling and tagging.
 
 ### LM Moments File
 
-Consider a language modelling setup. 
+Consider a language modelling setup.
 
-For example, let's say we were building a language model 
+For example, let's say we were building a language model
 with the training corpus:
 
     the cat chased the mouse
-   
+
 If our model has context K = 2, then we transform the corpus to:
 
     <S> <S> the cat chased the mouse
@@ -127,14 +158,14 @@ The corresponding moments file would then look like:
     2 4 1
     3 2 1
     4 5 1
-    
+
 ### Tagging Moments File
 
 Now consider a tagging setup. Let's say we were building a tagging
 model with the training corpus:
 
     the/D cat/N chased/V the/D mouse/N
-   
+
 If our model has context K=1, M=3 (roughly corresponding to Figure~7 in the paper) then we transform the corpus to:
 
     <S>/<T> the/D cat/N chased/V the/D mouse/N

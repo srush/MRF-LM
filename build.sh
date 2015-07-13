@@ -5,3 +5,4 @@ cd liblbfgs-1.10/
 make
 cd ..
 make
+make mrflm_test
