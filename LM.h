@@ -22,16 +22,6 @@ public:
         Init();
     }
 
-    void set_vocab(string vocab) {
-        ifstream in_vocab(vocab);
-        while (in_vocab) {
-            int index, count;
-            string name;
-            in_vocab >> index >> name >> count;
-            dict.push_back(name);
-        }
-    }
-
     int n_states(int i) { return V; }
     int n_variables() { return K + 1; }
     int n_constraints() { return 1; }
@@ -49,7 +39,6 @@ public:
         myfile << K << " " << V << endl;
     }
     int K, V;
-    vector<string> dict;
 };
 
 class LMLowRank : public LM {
@@ -78,7 +67,7 @@ public:
     void WriteEmbeddings(string emb_file) {
         ofstream output(emb_file);
         for (int v = 0; v < V; ++v) {
-            output << dict[v] << " ";
+            output << dict[0][v] << " ";
             for (int i = 0; i < D; ++i) {
                 output << U[v][i] << " ";
             }
@@ -112,11 +101,11 @@ public:
         ofstream output(emb_file);
         vector<int> near;
         for (int w = 0; w < V; ++w) {
-            output << dict[w] << endl;
+            output << dict[0][w] << endl;
             kNN(w, K, &near);
             for (int k = 0; k < K; ++k) {
                 int v = near[k];
-                output << "\t" << dict[v] << endl;
+                output << "\t" << dict[0][v] << endl;
             }
         }
     }

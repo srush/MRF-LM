@@ -21,7 +21,9 @@ int main(int argc, char **argv) {
     opts.add<string>("valid", '\0',
                      "Validation moments file.", true, "");
     opts.add<string>("output", 'o', "Output file to write model to.", true, "");
-    opts.add<string>("model", 'm', "Model to use, one of LM (LM low-rank parameters), LMFull (LM full-rank parameters).", false, "LM");
+    opts.add<string>("model", 'm',
+                     "Model to use, one of LM (LM low-rank parameters), LMFull (LM full-rank parameters), Tag (POS tagger).", false, "LM");
+
     opts.add<int>("dims", 'D', "Size of embedding for low-rank MRF.",
                   false, 100);
 
@@ -52,7 +54,7 @@ int main(int argc, char **argv) {
     if (model_type == "Tag") {
         model = new TagFeatures();
         ((TagFeatures*)model)->ReadFeatures(
-            opts.get<string>("tag-features"), 1);
+            opts.get<string>("tag-features"));
     } else if (model_type == "TagFull") {
         model = new Tag();
     } else if (model_type == "LM") {
@@ -67,18 +69,12 @@ int main(int argc, char **argv) {
 
     // If a validation set is given, read it.
     Test *valid_test = NULL;
+
+    // Tagging uses tag-test accuracy as validation.
     if (opts.exist("valid-tag")) {
-        valid_test = new TagTest(opts.get<string>("valid-tag"));
+        valid_test = new TagTest(opts.get<string>("valid-tag"), false);
     }
 
-    // if (opts.exist("train")) {
-    //     train_test = new Test(opts.get<string>("train"));
-    //     printf("Read training set, %d sentences\n", nsent_train);
-    // }
-    // if (opts.exist("valid")) {
-    //     valid_test = new Test(opts.get<string>("valid"));
-    //     printf("Read validation set, %d sentences\n", nsent_valid);
-    // }
     if (opts.exist("valid")) {
         ReadMoments(opts.get<string>("valid"), &valid_moments);
 
@@ -88,6 +84,4 @@ int main(int argc, char **argv) {
     // Run training.
     Train train(model, &inference, valid_test);
     train.LBFGS();
-
-    // WriteModel(opts.get<string>("output"));
 }

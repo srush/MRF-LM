@@ -46,6 +46,10 @@ void Train::compute_progress() {
     if (test_ != NULL) {
         printf("Running Validation: \n");
         valid_score = test_->TestModel(*model_);
+        if (opts.exist("valid")) {
+            printf("VALIDATION OBJECTIVE: \n");
+            model_->ComputeObjective(valid_moments, current_partition);
+        }
 
     } else {
         if (opts.exist("valid")) {

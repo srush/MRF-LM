@@ -14,7 +14,7 @@ public:
     virtual void InitFromMoments(const Moments &moments) {
         K = 1;
         V = moments.sizes[moments.L-1];
-        MR = 1;
+        MR = moments.L-2;
         T = moments.sizes[0];
         Init();
     }
@@ -73,13 +73,14 @@ public:
                     bool reverse);
 
     int n_features(int m, int v) {
+        if (v >= features[m].size()) return 0;
         return features[m][v].size();
     }
     int n_feature(int m, int v, int i) {
         return features[m][v][i];
     }
 
-    void ReadFeatures(string feature_file, int);
+    void ReadFeatures(string feature_file);
 
 private:
     void ExpandModel();

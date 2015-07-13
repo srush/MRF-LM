@@ -3,6 +3,7 @@
 
 #include "cmdline.h"
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -53,6 +54,17 @@ public:
     virtual int constrained(int cons, int i) = 0;
     virtual int n_trees() = 0;
 
+    void set_labels(string vocab, int i) {
+        ifstream in_vocab(vocab);
+        dict.resize(i+1);
+        while (in_vocab) {
+            int index, count;
+            string name;
+            in_vocab >> index >> name >> count;
+            dict[i].push_back(name);
+        }
+    }
+
     virtual void ReadParams(ifstream &myfile) = 0;
     virtual void WriteParams(ofstream &myfile) = 0;
 
@@ -69,9 +81,12 @@ public:
 
     // Number of parameters of the model.
     int M;
+    vector<vector<string> > dict;
 
 protected:
     void Exponentiate();
+
+
 };
 
 

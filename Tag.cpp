@@ -49,6 +49,7 @@ void TagFeatures::ExpandModel() {
         }
     }
     for (int m = 0; m < MR; ++m) {
+        #pragma omp parallel for
         for (int s = 0; s < T; s++) {
             for (int t = 0; t < V; ++t) {
                 theta[K+m][s][t] = 0.0;
@@ -108,6 +109,7 @@ void TagFeatures::SetWeights(const double *const_weight, bool reverse) {
     }
 
     for (int m = 0; m < MR; ++m) {
+        #pragma omp parallel for
         for (int f = 0; f < F; ++f) {
             for (int t = 0; t < T; ++t) {
                 int key = map_feature(m, f, t, MR, F, T);
@@ -125,11 +127,11 @@ void TagFeatures::SetWeights(const double *const_weight, bool reverse) {
 }
 
 
-void TagFeatures::ReadFeatures(string feature_file, int MR) {
+void TagFeatures::ReadFeatures(string feature_file) {
     ifstream myfile(feature_file);
     int npairs;
 
-    myfile >> F >> npairs;
+    myfile >> F >> npairs >> MR;
 
     int word, m, nfeats;
     features.resize(MR);

@@ -17,7 +17,8 @@ public:
 private:
     vector<vector<int> > words;
     vector<vector<int> > taggings;
-
+    vector<vector<int> > tag_dict;
+    bool print_;
 };
 
 #endif
