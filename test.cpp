@@ -5,6 +5,7 @@
 #include "cmdline.h"
 #include "LM.h"
 #include "Tag.h"
+#include "LMTest.h"
 #include "TagTest.h"
 #include "core.h"
 
@@ -18,12 +19,13 @@ int main(int argc, char **argv) {
                      "Model to use, one of LM (LM low-rank parameters), LMFull (LM full-rank parameters), Tag (POS tagger).", false, "LM");
 
     opts.add<string>("valid", '\0',
-                     "Validation moments file.", true, "");
+                     "Validation moments file.", false, "");
     opts.add<string>("train", '\0',
                      "Training moments file.", false, "");
     opts.add<string>("embeddings", '\0', "File to write word-embeddings to.",
                      false, "");
     opts.add<string>("vocab", '\0', "Word vocab file.", false, "");
+    opts.add<string>("lm-file", '\0', "Language model file.", false, "");
     opts.add<string>("tag-features", '\0',
                      "Features for the tagging model.", false,"");
     opts.add<string>("tag-file", '\0', "Tag test file.", false, "");
@@ -61,7 +63,7 @@ int main(int argc, char **argv) {
         model->set_labels(opts.get<string>("tag-vocab"), 1);
     }
 
-
+    cout << "Running " << endl;
     // If a validation set is given, read it.
     Test *valid_test = NULL;
     if (opts.exist("tag-file")) {
@@ -72,5 +74,14 @@ int main(int argc, char **argv) {
         LMLowRank *lmodel = (LMLowRank *)model;
         lmodel->WriteEmbeddings(opts.get<string>("embeddings"));
         lmodel->WriteKNN(opts.get<string>("embeddings") + ".nn", 10);
+    } else if (opts.exist("lm-file")) {
+        valid_test = new LMTest(opts.get<string>("lm-file"), true);
+        cout << "Score" << " " << valid_test->TestModel(*model)
+             << endl;
+
+    }
+    if (opts.exist("valid")) {
+        ReadMoments(opts.get<string>("valid"), &valid_moments);
+        cout << model->ComputeObjective(valid_moments, 0.0) << endl;
     }
 }

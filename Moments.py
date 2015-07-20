@@ -12,11 +12,13 @@ from backport_collections import Counter
 def get_text(in_file, K):
     with open(in_file) as f:
         txt = [x.strip() for x in f if len(x.split()) >= K]
+    with open(in_file) as f:
+        alltxt = [x.strip() for x in f]
     lintext = [y for sent in txt
                for y in (['<S>']*K + sent.split())]
 
 
-    return txt, lintext+ ['<S>']*K, len(lintext)
+    return alltxt, lintext + ['<S>']*K, len(lintext)
 
 def make_moments(lintext, vocounts, vocab, out_file, K, N):
 
@@ -39,6 +41,36 @@ def make_moments(lintext, vocounts, vocab, out_file, K, N):
                 print >>f, vocab[a], vocab[b], count
 
 
+def write_words(txt, out_file, vocab, K):
+    with open(out_file,'w') as f:
+        print >>f, len(txt)
+        for sent in txt:
+            sent_txt = ["<S>"] * K + sent.split() + ["<S>"] * (K+1)
+            print >>f, len(sent_txt),
+            for wrd in sent_txt:
+                print >>f, vocab.get(wrd, vocab['<unk>']),
+            print >>f, ''
+
+def write_pseudo_ngrams(in_file, out_file, K):
+    "Construct the counts for the p-ngram model."
+    ngrams = Counter()
+    with open(out_file,'w') as f:
+        for l in open(in_file):
+            words = l.strip().split()
+            words = ["<s>"] * K + words + ["</s>"] * (K+1)
+            for i in range(K, len(words)-K):
+                total = []
+                for k in range(1, K+1):
+                    total.append(words[i-k])
+                    total.append(words[i+k])
+                total.reverse()
+                total = total + [words[i]]
+                for j in range(len(total)):
+                    ngrams[tuple(total[j:])] += 1
+        for l in ngrams:
+            print >>f, " ".join(l), ngrams[l]
+
+
 def main(arguments):
 
     parser = argparse.ArgumentParser(description=__doc__,
@@ -52,20 +84,19 @@ def main(arguments):
     vocab_file = args.train + '_vocab_K' + str(args.K) + '.dat'
     train_moments_file = args.train + '_moments_K' + str(args.K) + '.dat'
     valid_moments_file = args.valid + '_moments_K' + str(args.K) + '.dat'
-    # train_text_file = args.train + '_text_K' + str(args.K) + '.dat'
-    # valid_text_file = args.valid + '_text_K' + str(args.K) + '.dat'
+    train_text_file = args.train + '_text_K' + str(args.K) + '.dat'
+    valid_text_file = args.valid + '_text_K' + str(args.K) + '.dat'
+    pngram_file = args.train + '_pngram_K' + str(args.K) + '.dat'
 
 
     K = args.K
     txt, lintext, N = get_text(args.train, args.K)
-    _, valid_lintext, valN = get_text(args.valid, args.K)
+    valid_txt, valid_lintext, valN = get_text(args.valid, args.K)
 
     vocounts = Counter()
     vocounts['<unk>'] = 0
 
-    for sent in txt:
-        lsent = ['<S>']*K + sent.split()
-        vocounts.update(lsent)
+    vocounts.update(lintext)
 
 
     vocab = dict([(w, i)
@@ -77,6 +108,8 @@ def main(arguments):
 
     make_moments(lintext, vocounts, vocab, train_moments_file, args.K, N)
     make_moments(valid_lintext, vocounts, vocab, valid_moments_file, args.K, valN)
-
+    write_words(txt, train_text_file, vocab, args.K)
+    write_words(valid_txt, valid_text_file, vocab, args.K)
+    write_pseudo_ngrams(args.train, pngram_file, args.K)
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

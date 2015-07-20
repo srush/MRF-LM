@@ -94,6 +94,22 @@ This command will train a tagging model, compute validation by running the Viter
 
 ## Advanced Usage
 
+### Word Embeddings
+
+Once a model is trained `mrflm_test` can be used to view the embeddings produced by the model.
+
+    ./mrflm_test  --model-name=lm.model --embeddings embed --vocab lm_data/ptb.train.txt_vocab_K2.dat
+
+This will output two files. The file `embed` will contain the word embedding vectors one per line. The
+file `embed.nn` will contain the 10 nearest neighbors for each word in the vocabulary.
+
+### Tagger
+
+The tagging model can also be used after it is trained. To run the tagger on a data set (such as test), use the following command.
+
+    ./mrflm_test --model-name=tag.model   --model Tag --tag-file=tag_data/ptb.test.txt.tag.words --tag-features=tag_data/ptb.train.txt.tag.features --vocab=tag_data/ptb.train.txt.tag.names --tag-vocab=tag_data/ptb.train.txt.tag.tagnames --train=tag_data/ptb.train.txt.tag.counts  --cores=1
+
+
 ### Moments File Format
 
 The input to the main implementation is a file containing the moments of the lifted
